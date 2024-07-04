@@ -8,6 +8,7 @@
   import { db, auth } from '@/firebase';
   import { addDoc, collection } from 'firebase/firestore';
   import { signInAnonymously } from 'firebase/auth';
+  import {State} from '@/store/state'
  
   type dataFormProps = {
     id?: any,
@@ -170,6 +171,8 @@
 
   const onSubmit = handleSubmit(async () => {
 
+    if(State.send) return
+    State.send = true
     const storedValues = localStorage.getItem('forms');
     const valuesForm = storedValues ? JSON.parse(storedValues) : null;
     const storedValuesFiles = localStorage.getItem('formsFiles');
@@ -194,10 +197,10 @@
 
     signInAnonymously(auth).then(async() =>{
 
+      /*       const emailContent = buildEmailContent(values, dataArray);
+            console.log(values.emailInstaller);
+            sendEmail(emailContent,values.emailInstaller) */
       await addDoc(collection(db, 'forms'), values);
-/*       const emailContent = buildEmailContent(values, dataArray);
-      console.log(values.emailInstaller);
-      sendEmail(emailContent,values.emailInstaller) */
       alert('Formulário enviado com sucesso!');
       localStorage.clear();
       window.location.reload();
@@ -271,3 +274,4 @@
  
 </style>
 
+../../store/state

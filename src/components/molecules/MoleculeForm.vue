@@ -774,6 +774,8 @@
 
   const questions = refVue(props.dataArray || []);
 
+  let isSendingForm: boolean = false
+
   const displayedQuestions = computed(() => {
     const filteredQuestions = questions.value.filter((question:any) => {
       if (currentSection.value === 'Identificacao') {
@@ -1212,6 +1214,11 @@
     emit('section-updated', newValue);
   }
 
+  const sendForm =() =>{
+    isSendingForm = true
+    emit('send-form')
+  }
+
   onMounted(() => {
     const storedValues = localStorage.getItem('forms');
     if (storedValues) {
@@ -1340,7 +1347,7 @@
             placeholder-input="Insira sua resposta"
             :name-customer="valuesForm.customerName"
             :id-project="valuesForm.projectId"
-            @change="(event) => {
+            @change="(event: Event) => {
               clearValidationError(data.name);
             }"
           />
@@ -1557,7 +1564,7 @@
                 :required-input="data.isRequired"
                 :items="inverterNames"
                 v-model="valuesForm.qtdPanelsConnectedSingleInputOfTheSingle[inverter-1].inverter.name"
-                @update:menu="(e) =>{
+                @update:menu="(e: Event) =>{
                   clearValidationError('qtdPanelsConnectedSingleInputOfTheSingle')
                   valuesForm[data.name + (index + 1)] = valuesForm.qtdPanelsConnectedSingleInputOfTheSingle[inverter-1].inverter.name
                   updateDistMppt(valuesForm.qtdPanelsConnectedSingleInputOfTheSingle[inverter-1].inverter.name, inverter-1)
@@ -1604,7 +1611,7 @@
                             :required-input="data.isRequired"
                             type-input="file"
                             placeholder-input="Insira sua resposta"
-                            @change="(event) => {
+                            @change="(event: Event) => {
                               clearValidationError('photoVoltInverterInput');
                             
                             }"
@@ -1637,7 +1644,7 @@
                           :required-input="data.isRequired"
                           type-input="file"
                           placeholder-input="Insira sua resposta"
-                          @change="(event) => {
+                          @change="(event: Event) => {
                             clearValidationError('photoChainInverterInput');
                           }"
                           :inverter="Number(index)"
@@ -1715,7 +1722,7 @@
             :required-input="data.isRequired"
             :type-input="data.typeOfResponse"
             placeholder-input="Insira sua resposta"
-            @change="(event) => {
+            @change="(event: Event) => {
               clearValidationError(data.name);
             }"
           />
@@ -1770,7 +1777,7 @@
             :required-input="data.isRequired"
             :type-input="data.typeOfResponse"
             placeholder-input="Insira sua resposta"
-            @change="(event) => {
+            @change="(event: Event) => {
               clearValidationError(data.name);
             }"
           />
@@ -1839,7 +1846,7 @@
             :required-input="data.isRequired"
             :type-input="data.typeOfResponse"
             placeholder-input="Insira sua resposta"
-            @change="(event) => {
+            @change="(event: any) => {
               clearValidationError(data.name);
               valuesForm[data.name] = [event.target.files];
             }"
@@ -1908,7 +1915,7 @@
         <v-progress-linear v-model="progress" :max="valuesForm.inverterTypeInstalled === 'Inversor String' ? valuesForm.sendNFsForPaymentNow === 'Sim' ? '100' : '90' :  valuesForm.sendNFsForPaymentNow === 'Sim' ? '90' : '80'" color="#1f4997"></v-progress-linear>
       </div>
       <v-btn v-if="currentSection !== 'Finalizacao'"  @click="validateForm" >Próximo</v-btn>
-      <v-btn v-if="currentSection === 'Finalizacao'"  @click="emit('send-form')">Enviar</v-btn>
+      <v-btn v-if="currentSection === 'Finalizacao'" :disabled="isSendingForm"  @click="sendForm">Enviar</v-btn>
     </div>
     <div class="container-clear">
       <v-btn class="clear" @click.prevent="clearForm">Limpar formulário</v-btn>

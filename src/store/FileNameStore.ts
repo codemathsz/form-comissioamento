@@ -7,7 +7,6 @@ export const useFileNameStore = defineStore("filename-store", () =>{
     names = {
       ...name
     }
-    console.log(names);
     
     localStorage.setItem("uploadNames", JSON.stringify(names))
   }

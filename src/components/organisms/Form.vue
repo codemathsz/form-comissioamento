@@ -9,6 +9,9 @@
   import { addDoc, collection } from 'firebase/firestore';
   import { signInAnonymously } from 'firebase/auth';
   import {State} from '@/store/state'
+  import axios from "axios";
+  //@ts-ignore
+  import querystring from "querystring-browser";
  
   type dataFormProps = {
     id?: any,
@@ -194,13 +197,16 @@
     }
 
     values.dataInclude = new Date().toLocaleString()
-
+    values['Data e Hora de Inserção'] = new Date().toLocaleString()
+    console.log('values: ',values)
     signInAnonymously(auth).then(async() =>{
 
-      /*       const emailContent = buildEmailContent(values, dataArray);
-            console.log(values.emailInstaller);
-            sendEmail(emailContent,values.emailInstaller) */
       await addDoc(collection(db, 'forms'), values);
+      const { data } = await axios.post(
+        "https://script.google.com/macros/s/AKfycbyMvCgZWzzd1Yss10OeT6uQDOSOqru45ySHgZdP6i-wx_gHWrbIqBUfBQVevkMdMkVm/exec",
+        querystring.stringify(values)
+      );
+
       alert('Formulário enviado com sucesso!');
       localStorage.clear();
       window.location.reload();
